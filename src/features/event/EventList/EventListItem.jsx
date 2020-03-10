@@ -15,7 +15,7 @@ import EventAttendee from './EventAttendee';
                     <Item.Content>
                     <Item.Header as="a">{event.title}</Item.Header>
                     <Item.Description>
-                        Hosted by <a>{event.hostedBy}</a>
+                        Hosted by {event.hostedBy}
                     </Item.Description>
                     </Item.Content>
                 </Item>
@@ -30,6 +30,7 @@ import EventAttendee from './EventAttendee';
             <Segment secondary>
                 <List horizontal>
                 {
+                    event.attendees &&
                     event.attendees.map(attendee => (
                         <EventAttendee key={attendee.id} attendee = {attendee}/>
                     ))
