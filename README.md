@@ -26,6 +26,8 @@ This is a react application  using Redux, Hooks and GraphQL
 
  * 4. Reselect: npm install reselect
 
+ * 5. Navigations: npm install --save react-router-dom, npm install --save react-router
+
  
  #### Back End
 
@@ -39,3 +41,8 @@ This is a react application  using Redux, Hooks and GraphQL
 >   "webRoot": "${workspaceFolder}/src"
 
 Then we can click on Launch debugger against local host in order to debug
+
+
+### Check for missing typed
+1.  Look for the page: https://microsoft.github.io/TypeSearch/
+2.  Type what is missing, for example: react-router-dom. You will be redirected to the page: https://www.npmjs.com/package/@types/react-router-dom. Just install the missing typed 
