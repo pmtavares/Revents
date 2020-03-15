@@ -28,6 +28,10 @@ This is a react application  using Redux, Hooks and GraphQL
 
  * 5. Navigations: npm install --save react-router-dom, npm install --save react-router
 
+ * 6. Redux: npm i redux react-redux@5.1.2
+
+ * 7. Dev Tools: npm i redux-devtools-extension
+
  
  #### Back End
 
