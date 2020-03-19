@@ -1,79 +1,30 @@
 import React, { Component } from 'react'
+import {connect} from 'react-redux';
 import { Grid, Button } from 'semantic-ui-react';
 import EventList from '../EventList/EventList';
 import EventForm from '../EventForm/EventForm';
 import cuid from 'cuid';
+import {createEvent, updateEvent, deleteEvent} from '../eventActions'
 
-const eventsFromDashboard = [
-  {
-    id: '1',
-    title: 'Trip to Tower of London',
-    date: '2018-03-27',
-    category: 'culture',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sollicitudin ligula eu leo tincidunt, quis scelerisque magna dapibus. Sed eget ipsum vel arcu vehicula ullamcorper.',
-    city: 'London, UK',
-    venue: "Tower of London, St Katharine's & Wapping, London",
-    hostedBy: 'Bob',
-    hostPhotoURL: 'https://randomuser.me/api/portraits/men/20.jpg',
-    attendees: [
-      {
-        id: 'a',
-        name: 'Bob',
-        photoURL: 'https://randomuser.me/api/portraits/men/20.jpg'
-      },
-      {
-        id: 'b',
-        name: 'Tom',
-        photoURL: 'https://randomuser.me/api/portraits/men/22.jpg'
-      }
-    ]
-  },
-  {
-    id: '2',
-    title: 'Trip to Punch and Judy Pub',
-    date: '2018-03-28',
-    category: 'drinks',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sollicitudin ligula eu leo tincidunt, quis scelerisque magna dapibus. Sed eget ipsum vel arcu vehicula ullamcorper.',
-    city: 'London, UK',
-    venue: 'Punch & Judy, Henrietta Street, London, UK',
-    hostedBy: 'Tom',
-    hostPhotoURL: 'https://randomuser.me/api/portraits/men/22.jpg',
-    attendees: [
-      {
-        id: 'b',
-        name: 'Tom',
-        photoURL: 'https://randomuser.me/api/portraits/men/22.jpg'
-      },
-      {
-        id: 'a',
-        name: 'Bob',
-        photoURL: 'https://randomuser.me/api/portraits/men/20.jpg'
-      }
-    ]
-  }
-]
 
 
  class EnventDashboard extends Component {
      state = {
-         events: eventsFromDashboard,
          isOpen: false,
          selectedEvent: null
      }
      
-     handleIsOpenToggle = () => {
-         this.setState(({isOpen}) => ({
-             isOpen: !isOpen
-         }))
-     }
+    // handleIsOpenToggle = () => {
+      //   this.setState(({isOpen}) => ({
+        //     isOpen: !isOpen
+         //}))
+     //}
 
      handleCreateEvent = (newEvent) =>{
         newEvent.id = cuid();
         newEvent.hostPhotoURL = '/assets/user.png';
+        this.props.createEvent(newEvent);
         this.setState(({events}) =>({
-          events: [...events, newEvent],
           isOpen: false
         }))
      }
@@ -92,8 +43,6 @@ const eventsFromDashboard = [
      }
 
      handleSelectEvent =(evt, event) =>{
-       console.log(evt)
-       console.log(event)
        this.setState({
          selectedEvent: event,
          isOpen: true
@@ -101,28 +50,20 @@ const eventsFromDashboard = [
      }
 
      handleUpdateEvent = (updatedEvent) =>{
-        this.setState(({events}) => ({
-          events: events.map(event => {
-            if(event.id === updatedEvent.id){
-              return {...updatedEvent}
-            }
-            else{
-              return event
-            }
-          }),
+       this.props.updateEvent(updatedEvent);
+        this.setState(() => ({
           isOpen: false,
           selectedEvent: null
         }))
      }
 
      handleDeleteEvent =(id) =>{
-       this.setState(({events}) => ({
-          events: events.filter(e => e.id !== id)
-       }))
+       this.props.deleteEvent(id)
      }
 
     render() {
-        const {events, isOpen, selectedEvent} = this.state
+        const {isOpen, selectedEvent} = this.state;
+        const {events} = this.props;
         return (
             <Grid>
                 <Grid.Column width={10}>
@@ -146,4 +87,14 @@ const eventsFromDashboard = [
 }
 
 
-export default EnventDashboard;
+const mapState = (state) => ({
+  events: state.events
+})
+
+const actions = {
+  createEvent,
+  updateEvent,
+  deleteEvent
+}
+
+export default connect(mapState, actions)(EnventDashboard);
