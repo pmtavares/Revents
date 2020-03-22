@@ -22,7 +22,7 @@ class App extends Component {
           <Fragment>
            <Navbar />
            <Container className="main">             
-             <Route path='/events' component={EnventDashboard}/>
+             <Route exact path='/events' component={EnventDashboard}/>
              <Route path='/events/:id' component={EventDetailedPage}/>
              <Route path='/people' component={PeopleDashboard}/>
              <Route path='/profile/:id' component={UserDetailedPage}/>
