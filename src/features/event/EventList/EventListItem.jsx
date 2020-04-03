@@ -6,6 +6,8 @@ import { Link } from 'react-router-dom';
  class EventListItem extends Component {
     render() {
         const {event, deleteEvent} = this.props;
+        const date = event.date.toString();
+console.log(date)
         return (
         <Segment.Group>
             <Segment>
@@ -24,7 +26,7 @@ import { Link } from 'react-router-dom';
             </Segment>
             <Segment>
                 <span>
-                <Icon name="clock" /> {event.date} |
+                <Icon name="clock" />  {date.toString().substring(0,10)} |
                 <Icon name="marker" /> {event.venue}
                 </span>
             </Segment>
