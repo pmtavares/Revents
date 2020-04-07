@@ -1,3 +1,5 @@
+/* global google */
+
 import React, { Component } from 'react'
 import {connect} from 'react-redux'
 import {reduxForm, Field} from 'redux-form';
@@ -13,6 +15,8 @@ import TextInput from '../../../app/form/TextInput';
 import TextArea from '../../../app/form/TextArea';
 import SelectInput from '../../../app/form/SelectInput';
 import DateInput from '../../../app/form/DateInput'
+import PlaceInput from '../../../app/form/PlaceInput';
+import {geocodeByAddress, getLatLng} from 'react-places-autocomplete'
 
 const mapState = (state, ownProps) => {
     const eventId = ownProps.match.params.id;
@@ -51,9 +55,15 @@ const category = [
     {key: 'music', text: 'Music', value: 'music'},
     {key: 'travel', text: 'Travel', value: 'travel'},
 ];
- class EventForm extends Component {
 
+
+ class EventForm extends Component {
+    state ={
+        cityLatLng: {},
+        venueLatLng: {} 
+    }
     onFormSubmit = (values) =>{
+        values.venueLatLng = this.state.venueLatLng;
         if(this.props.initialValues.id){
             this.props.updateEvent(values)
             this.props.history.push(`/events/${this.props.initialValues.id}`)
@@ -63,13 +73,38 @@ const category = [
                 ...values,
                 id : cuid(),
                 hostPhotoURL : '/assets/user.png',
-                hostedBy: 'Tavares'
+                hostedBy: 'Tavares',
+                attendees: []
             }
             this.props.createEvent(newEvent)
             this.props.history.push(`/events`)
         }
 
     
+    }
+
+    handleCitySelect = selectedCity => {
+        geocodeByAddress(selectedCity)
+            .then(results => getLatLng(results[0]))
+            .then(latlng => {
+                this.setState({
+                    cityLatLng: latlng
+                })
+            })
+            .then(() => {this.props.change('city', selectedCity)})
+            
+    }
+    
+    handleVenueSelect = selectedVenue => {
+        geocodeByAddress(selectedVenue)
+            .then(results => getLatLng(results[0]))
+            .then(latlng => {
+                this.setState({
+                    venueLatLng: latlng
+                })
+            })
+            .then(() => {this.props.change('venue', selectedVenue)})
+            
     }
 
     render() {
@@ -90,8 +125,15 @@ const category = [
                                    placeholder='Event description' rows={3}/>
                             
                             <Header sub color='teal' content='Event Location details' />
-                            <Field name='city' component={TextInput} placeholder='Event city'/>
-                            <Field name='venue' component={TextInput} placeholder='Event venue'/>
+                            <Field name='city' component={PlaceInput} placeholder='Event city'
+                                options={{types: ['(cities)']}}
+                                onSelect={this.handleCitySelect}
+                            />
+                            <Field name='venue' component={PlaceInput} placeholder='Event venue'
+                                options={{location: new google.maps.LatLng(this.state.cityLatLng),
+                                            radius: 1000, types: ['establishment']}}
+                                onSelect={this.handleVenueSelect}/>
+
                             <Field name='date' component={DateInput} date-format="dd LLL yyyy h:mm"
                                     showTimeSelect timeFormat='HH:mm'
                                         placeholder='Event date'/>  
