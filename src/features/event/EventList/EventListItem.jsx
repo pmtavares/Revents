@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
     render() {
         const {event, deleteEvent} = this.props;
         const date = event.date.toString();
-console.log(date)
+
         return (
         <Segment.Group>
             <Segment>

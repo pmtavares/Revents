@@ -1,26 +1,38 @@
 import React, { Component } from 'react'
+import {connect} from 'react-redux';
 import {Menu, Container, Button} from 'semantic-ui-react'
 import { NavLink, Link, withRouter } from 'react-router-dom';
 import SignoutMenu from '../Menus/SignoutMenu';
 import SignInMenu from '../Menus/SignInMenu';
+import {openModal} from '../../modals/modalActions'
+import {logout} from '../../auth/authActions'
+
+const actions = {
+    openModal,
+    logout
+}
+
+const mapState = (state) => ({
+    auth: state.auth
+})
 
 class Navbar extends Component {
 
-    state = {
-        authenticated: false
+    handleSignIn = () => {
+        this.props.openModal('LoginModal')
     }
 
-    handleSignIn = () => {
-        this.setState({authenticated: true})
+    handleRegister = () => {
+        this.props.openModal('RegisterModal')
     }
 
     handleSignOut = () => {
-        this.setState({authenticated: false});
+        this.props.logout();
         this.props.history.push('/')
-        console.log(this.state.authenticated)
     }
     render() {
-        const {authenticated} = this.state;
+        const {auth} = this.props;
+        const authenticated = auth.authenticated;
         return (
             <Menu inverted fixed="top">
                 <Container>
@@ -38,8 +50,8 @@ class Navbar extends Component {
                             as={Link} to='/createEvent' />
                     </Menu.Item>
                     {authenticated ? 
-                        <SignInMenu signOut={this.handleSignOut} /> : 
-                        <SignoutMenu signIn = {this.handleSignIn}/>}
+                        <SignInMenu signOut={this.handleSignOut} currentUser={auth.currentUser}/> : 
+                        <SignoutMenu signIn = {this.handleSignIn} register={this.handleRegister}/>}
                     
                     
                 </Container>
@@ -48,4 +60,4 @@ class Navbar extends Component {
     }
 }
 
-export default withRouter(Navbar);
+export default withRouter(connect(mapState, actions)(Navbar));

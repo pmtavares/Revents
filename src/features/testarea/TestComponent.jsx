@@ -8,8 +8,19 @@ import {
     geocodeByAddress,
     getLatLng,
   } from 'react-places-autocomplete';
+import {openModal} from '../modals/modalActions';
 
-const TestComponent = ({data,incrementCounter, decrementCounter }) => {
+const mapState = (state) => ({
+    data: state.test.data
+})
+
+const mapActions = {
+    incrementCounter, 
+    decrementCounter,
+    openModal
+}
+
+const TestComponent = ({data,incrementCounter, decrementCounter, openModal }) => {
     const [latlng, setLaglng] = useState({
         lat: 59.95,
         lng: 30.33
@@ -28,6 +39,8 @@ const TestComponent = ({data,incrementCounter, decrementCounter }) => {
             <h4>Answer: {data}</h4>
             <Button onClick={incrementCounter} positive content='Increment' />
             <Button onClick={decrementCounter} negative content='Decrement' />
+            <Button onClick={() => openModal('TestModal', {data: 42})} 
+             content='Open Modal' color='teal' />
             <br />
             <br/>
             <TestPlaceInput selectAddress={handleSelect}/>
@@ -36,13 +49,6 @@ const TestComponent = ({data,incrementCounter, decrementCounter }) => {
     )
 }
 
-const mapState = (state) => ({
-    data: state.test.data
-})
 
-const mapActions = {
-    incrementCounter, 
-    decrementCounter
-}
 
 export default connect(mapState, mapActions)(TestComponent)
